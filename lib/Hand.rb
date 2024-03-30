@@ -28,7 +28,6 @@ class Hand
       :high_card
     end
   end
-
   def straight_flush?
     flush? && straight?
   end
