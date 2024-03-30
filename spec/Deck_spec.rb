@@ -1,10 +1,30 @@
-require_relative '../lib/Deck'
+require '../lib/Deck'
 
 RSpec.describe Deck do
-  describe '#initialize' do
-    it 'creates deck of 52 cards' do
-      deck = Deck.new
-      expect(deck.cards.length).to eq(52)
+  let(:deck) { Deck.new }
+
+  describe "#initialize" do
+    it "builds deck 52 cards" do
+      expect(deck.cards.size).to eq(52)
+    end
+
+    it "shuffles deck" do
+      shuffled_deck = Deck.new.cards
+      expect(shuffled_deck).not_to eq(deck.cards)
+    end
+  end
+
+  describe "#deal" do
+    it "deals specified number of cards" do
+      dealt_cards = deck.deal(5)
+      expect(dealt_cards.size).to eq(5)
+    end
+
+    it "removes dealt cards" do
+      initial_deck_size = deck.cards.size
+      dealt_cards = deck.deal(5)
+      expect(deck.cards.size).to eq(initial_deck_size - 5)
+      dealt_cards.each { |card| expect(deck.cards).not_to include(card) }
     end
   end
 end

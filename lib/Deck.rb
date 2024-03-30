@@ -1,12 +1,21 @@
-require_relative 'Card'
+require_relative '../lib/Card'
 
 class Deck
   attr_reader :cards
 
-  # intialize cards and shuffles
   def initialize
-    @cards = []
-    build_deck
-    shuffle!
+    @cards = init_deck.shuffle
+  end
+
+  def deal(num)
+    cards.shift(num)
+  end
+
+  private
+
+  def init_deck
+    suits = ['Hearts', 'Diamonds', 'Clubs', 'Spades']
+    values = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'Jack', 'Queen', 'King', 'Ace']
+    suits.product(values).map { |suit, value| Card.new(suit, value) }
   end
 end
