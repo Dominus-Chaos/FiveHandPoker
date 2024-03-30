@@ -1,68 +1,47 @@
 require_relative '../lib/Deck'
+require_relative '../lib/Card'
 
 class Hand
-  attr_reader :cards
-
   def initialize(cards)
     @cards = cards
   end
-
+  #tried to turn this into a if statment didnt work
   def evaluate
-    if straight_flush?
-      return :straight_flush
-    elsif four_of_a_kind?
-      return :four_of_a_kind
-    elsif full_house?
-      return :full_house
-    elsif flush?
-      return :flush
-    elsif straight?
-      return :straight
-    elsif three_of_a_kind?
-      return :three_of_a_kind
-    elsif two_pair?
-      return :two_pair
-    elsif pair?
-      return :pair
-    else
-      :high_card
-    end
-  end
-  def straight_flush?
-    flush? && straight?
+    #since it return i think i didnt nee if statment
+    return :straight_flush if straight? && flush?
+    return :four_of_a_kind if n_of_a_kind?(4)
+    return :full_house if full_house?
+    return :flush if flush?
+    return :straight if straight?
+    return :three_of_a_kind if n_of_a_kind?(3)
+    return :two_pair if two_pair?
+    return :pair if n_of_a_kind?(2)
+    :high_card
   end
 
-  def four_of_a_kind?
-    group_by_value.values.any? { |group| group.length == 4 }
+  def n_of_a_kind?(n)
+    ranks_count.values.any? { |count| count == n }
+  end
+  #checks for striagnt
+  def straight?
+    sorted_ranks = @cards.map(&:rank).sort_by { |rank| Card::RANKS.index(rank) }
+    (0..3).all? { |i| Card::RANKS.index(sorted_ranks[i + 1]) - Card::RANKS.index(sorted_ranks[i]) == 1 }
+  end
+  #checks for flush
+  def flush?
+    @cards.map(&:suit).uniq.size == 1
   end
 
   def full_house?
-    group_by_value.values.map(&:length).sort == [2, 3]
-  end
-
-  def flush?
-    cards.map(&:suit).uniq.length == 1
-  end
-
-  def straight?
-    values = cards.map { |card| Card::VALUES.index(card.value) }.sort
-    return false if values.include?(nil) # For Ace being both high and low
-    (values.last - values.first) == 4 && values.uniq.length == 5
-  end
-
-  def three_of_a_kind?
-    group_by_value.values.any? { |group| group.length == 3 }
+    ranks_count.values.sort == [2, 3]
   end
 
   def two_pair?
-    group_by_value.values.count { |group| group.length == 2 } == 2
+    ranks_count.values.count(2) == 2
   end
 
-  def pair?
-    group_by_value.values.any? { |group| group.length == 2 }
-  end
-
-  def group_by_value
-    cards.group_by(&:value)
+  def ranks_count
+    @cards.group_by(&:rank).transform_values(&:count)
   end
 end
+#rspec failign ow well i give up

@@ -1,5 +1,6 @@
 require '../lib/Hand'
-
+require '../lib/Card'
+#yeah no
 RSpec.describe Hand do
   describe '#evaluate' do
     it 'returns :straight_flush' do
