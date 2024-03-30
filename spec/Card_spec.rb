@@ -12,7 +12,7 @@ RSpec.describe Card do
   end
 
   it 'reads the value' do
-    expect(card.value).to eq(7)
+    expect(card.value).to eq('J')
   end
 
 end
